@@ -56,12 +56,8 @@
         {
             "type": "Microsoft.Sql/servers/databases",
             "apiVersion": "2017-03-01-preview",
-            "name": "[concat(parameters('SQLSERVERNAME'),'/',variables('databases')[copyIndex()])]",
+            "name": "[concat(parameters('SQLSERVERNAME'),'/',variables('databases'))]",
             "location": "[resourcegroup().location]",
-            "copy": {
-                "name": "databasesloop",
-                "count": "[length(variables('databases'))]"
-            },
             "dependsOn": [
                 "[resourceId('Microsoft.Sql/servers', parameters('SQLSERVERNAME'))]"
             ],
@@ -79,21 +75,21 @@
                     "name": "default",
                     "type": "backupLongTermRetentionPolicies",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Sql/servers/databases',parameters('sqlservername'),variables('databases')[copyIndex()])]"
+                        "[resourceId('Microsoft.Sql/servers/databases',parameters('sqlservername'),variables('databases'))]"
                     ],
                     "apiVersion": "2017-03-01-preview",
                     "properties": {
-                        "weeklyRetention": "P18W",
-                        "monthlyRetention": "P54W",
-                        "yearlyRetention": "P520W",
-                        "weekOfYear": 1
+                "weeklyRetention": "P18W",
+                "monthlyRetention": "P54W",
+                "yearlyRetention": "P520W",
+                "weekOfYear": 1
                     }
                 },
                 {
                     "type": "providers/diagnosticSettings",
                     "name": "[concat('Microsoft.Insights/', parameters('sqlservername'))]",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Sql/servers/databases',parameters('sqlservername'),variables('databases')[copyIndex()])]"
+                        "[resourceId('Microsoft.Sql/servers/databases',parameters('sqlservername'),variables('databases'))]"
                     ],
                     "apiVersion": "2017-05-01-preview",
                     "properties": {
@@ -196,7 +192,7 @@
                 }
             ]
         },
-        {
+{
             "type": "Microsoft.Sql/servers/auditingSettings",
             "apiVersion": "2017-03-01-preview",
             "name": "[concat(parameters('SQLSERVERNAME'), '/Default')]",
@@ -221,9 +217,32 @@
         {
             "type": "Microsoft.Sql/servers/databases/auditingSettings",
             "apiVersion": "2017-03-01-preview",
-            "name": "[concat(parameters('SQLSERVERNAME'), '/timeoffdb')]",
+            "name": "[concat(parameters('SQLSERVERNAME'), '/',variables('databases'))]",
             "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers/databases', parameters('SQLSERVERNAME'), 'timeoffdb')]",
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('SQLSERVERNAME'),variables('databases'))]",
+                "[resourceId('Microsoft.Sql/servers', parameters('SQLSERVERNAME'))]"
+            ],
+            "properties": {
+                "state": "Enabled",
+                "storageEndpoint": "[concat('https://', parameters('Storageaccount').storageAccountName.value, '.blob.core.windows.net/')]",
+                "retentionDays": 90,
+                "storageAccountAccessKey": "[parameters('storageAccount').storagekey.value]",
+                "auditActionsAndGroups": [
+                    "SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP",
+                    "FAILED_DATABASE_AUTHENTICATION_GROUP",
+                    "BATCH_COMPLETED_GROUP"
+                ],
+                "storageAccountSubscriptionId": "[subscription().subscriptionId]",
+                "isStorageSecondaryKeyInUse": false,
+                "isAzureMonitorTargetEnabled": true
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingSettings",
+            "apiVersion": "2017-03-01-preview",
+            "name": "[concat(parameters('SQLSERVERNAME'), '/',variables('databases'),'/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('SQLSERVERNAME'), variables('databases'))]",
                 "[resourceId('Microsoft.Sql/servers', parameters('SQLSERVERNAME'))]"
             ],
             "properties": {
@@ -241,6 +260,7 @@
                 "isAzureMonitorTargetEnabled": true
             }
         }
+
     ],
     "outputs": {
         "sqlservername": {
