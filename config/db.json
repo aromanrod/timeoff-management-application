@@ -1,12 +1,14 @@
 {
   "development": {
-    "dialect": "sqlite",
-    "storage": "./db.development.sqlite",
-    "logging": false
+    "username": "timeoff",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "sqlite"
   },
   "test": {
     "username": "root",
-    "password": null,
+    "password": "Area1598$",
     "database": "database_test",
     "host": "127.0.0.1",
     "dialect": "mysql"
