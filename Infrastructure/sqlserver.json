@@ -218,59 +218,12 @@
                 "isAzureMonitorTargetEnabled": true
             }
         },
-
         {
             "type": "Microsoft.Sql/servers/databases/auditingSettings",
             "apiVersion": "2017-03-01-preview",
-            "name": "[concat(parameters('SQLSERVERNAME'), '/Create_JackRabbit/Default')]",
+            "name": "[concat(parameters('SQLSERVERNAME'), '/timeoffdb')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers/databases', parameters('SQLSERVERNAME'), 'Create_JackRabbit')]",
-                "[resourceId('Microsoft.Sql/servers', parameters('SQLSERVERNAME'))]"
-            ],
-            "properties": {
-                "state": "Enabled",
-                "storageEndpoint": "[concat('https://', parameters('Storageaccount').storageAccountName.value, '.blob.core.windows.net/')]",
-                "retentionDays": 90,
-                "storageAccountAccessKey": "[parameters('storageAccount').storagekey.value]",
-                "auditActionsAndGroups": [
-                    "SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP",
-                    "FAILED_DATABASE_AUTHENTICATION_GROUP",
-                    "BATCH_COMPLETED_GROUP"
-                ],
-                "storageAccountSubscriptionId": "[subscription().subscriptionId]",
-                "isStorageSecondaryKeyInUse": false,
-                "isAzureMonitorTargetEnabled": true
-            }
-        },
-        {
-            "type": "Microsoft.Sql/servers/databases/auditingSettings",
-            "apiVersion": "2017-03-01-preview",
-            "name": "[concat(parameters('SQLSERVERNAME'), '/Create_Exari/Default')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers/databases', parameters('SQLSERVERNAME'), 'Create_Exari')]",
-                "[resourceId('Microsoft.Sql/servers', parameters('SQLSERVERNAME'))]"
-            ],
-            "properties": {
-                "state": "Enabled",
-                "storageEndpoint": "[concat('https://', parameters('Storageaccount').storageAccountName.value, '.blob.core.windows.net/')]",
-                "retentionDays": 90,
-                "storageAccountAccessKey": "[parameters('storageAccount').storagekey.value]",
-                "auditActionsAndGroups": [
-                    "SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP",
-                    "FAILED_DATABASE_AUTHENTICATION_GROUP",
-                    "BATCH_COMPLETED_GROUP"
-                ],
-                "storageAccountSubscriptionId": "[subscription().subscriptionId]",
-                "isStorageSecondaryKeyInUse": false,
-                "isAzureMonitorTargetEnabled": true
-            }
-        },
-        {
-            "type": "Microsoft.Sql/servers/databases/auditingSettings",
-            "apiVersion": "2017-03-01-preview",
-            "name": "[concat(parameters('SQLSERVERNAME'), '/Create/Default')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Sql/servers/databases', parameters('SQLSERVERNAME'), 'Create')]",
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('SQLSERVERNAME'), 'timeoffdb')]",
                 "[resourceId('Microsoft.Sql/servers', parameters('SQLSERVERNAME'))]"
             ],
             "properties": {
@@ -288,7 +241,6 @@
                 "isAzureMonitorTargetEnabled": true
             }
         }
-
     ],
     "outputs": {
         "sqlservername": {
