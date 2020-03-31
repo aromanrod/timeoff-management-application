@@ -1,0 +1,53 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "loganalitycsname": {
+            "type": "string"
+        },
+        "rgEnvironmentTag": {
+            "type": "string"
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "type": "microsoft.operationalinsights/workspaces",
+            "name": "[parameters('loganalitycsname')]",
+            "apiVersion": "2015-11-01-preview",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "environment": "[parameters('rgEnvironmentTag')]"
+            },
+            "scale": null,
+            "properties": {
+                "source": "Azure",
+                "sku": {
+                    "name": "PerNode"
+                },
+                "retentionInDays": 31
+            },
+            "dependsOn": [
+            ]
+        }
+    ],
+    "outputs": {
+        "omsidref": {
+            "type": "string",
+            "value": "[resourceId('microsoft.operationalinsights/workspaces', parameters('loganalitycsname'))]"
+        },
+        "omsname": {
+            "type": "string",
+            "value": "[parameters('loganalitycsname')]"
+        },
+        "workspaceCustomerId": {
+            "value": "[reference(resourceId('microsoft.operationalinsights/workspaces', parameters('loganalitycsname')), '2015-11-01-preview').customerId]",
+            "type": "string"
+        },
+        "workspacePrimarySharedKey": {
+            "value": "[listKeys(resourceId('microsoft.operationalinsights/workspaces', parameters('loganalitycsname')), '2015-11-01-preview').primarySharedKey]",
+            "type": "securestring"
+        }
+    }
+}

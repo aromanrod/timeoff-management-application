@@ -1,0 +1,52 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAccountName": {
+      "type": "string"
+    },
+    "rgEnvironmentTag": {
+      "type": "string"
+    }
+  },
+  "variables": {
+  },
+  "resources": [
+    {
+      "name": "[parameters('storageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-04-01",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "supportsHttpsTrafficOnly": true
+      },
+      "tags": {
+        "environment": "[parameters('rgEnvironmentTag')]"
+      },
+      "resources": [
+      ]
+    }
+  ],
+  "outputs": {
+    "storageAccountName": {
+      "type": "string",
+      "value": "[parameters('storageAccountName')]"
+    },
+    "storagekey": {
+      "type": "string",
+      "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+    },
+    "storageAccountid": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Storage/storageAccounts',parameters('storageAccountName'))]"
+    },
+    "primaryendpoint": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))).primaryEndpoints.blob]"
+    }
+  }
+}

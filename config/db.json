@@ -1,8 +1,8 @@
 {
   "development": {
-    "username": "azure",
-    "password": "6#vWHD_$",
-    "database": "timeoffappdb",
+    "username": "timeoffuserdb",
+    "password": "Area1598$",
+    "database": "database_dev",
     "host": "localhost",
     "dialect": "mysql"
   },
