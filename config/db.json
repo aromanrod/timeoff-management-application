@@ -1,7 +1,7 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
+    "username": "timeoffuserdb",
+    "password": "iWxGHocQpr5a4Ue4",
     "database": "timeoffappdb",
     "host": "localhost",
     "dialect": "mysql"
