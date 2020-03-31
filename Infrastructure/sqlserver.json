@@ -22,9 +22,7 @@
         }
     },
     "variables": {
-        "databases": [
-            "timeoffdb"
-        ]
+        "databases": "timeoffdb"
     },
     "resources": [
         {
