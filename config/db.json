@@ -1,23 +1,9 @@
 {
   "development": {
-    "username": "azure",
-    "password": "6#vWHD_$",
-    "database": "timeoffappdb",
-    "host": "localhost",
-    "dialect": "mysql"
-  },
-  "test": {
-    "username": "root",
+    "username": "timeoffuserdb",
     "password": "Area1598$",
-    "database": "database_test",
-    "host": "127.0.0.1",
+    "host": "localhost",
+    "database": "database_dev",
     "dialect": "mysql"
-  },
-  "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
-  }
+}
 }

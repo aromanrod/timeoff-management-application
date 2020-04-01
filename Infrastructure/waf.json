@@ -1,0 +1,218 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "enviromentPrefix": {
+            "type": "string"
+        },
+        "subnetid": {
+            "type": "object"
+        },
+        "fqdn": {
+            "type": "string"
+        },
+        "workspaceId": {
+            "type": "string"
+        },
+        "storagelogstname": {
+            "type": "string"
+        },
+        "rgEnvironmentTag": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "publicIPAddresses_name": "[concat(parameters('enviromentPrefix'),'ippwaf')]",
+        "wafname": "[concat(parameters('enviromentPrefix'),'netwaf01')]"
+    },
+    "resources": [
+        
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "sku": {
+                "name": "Basic",
+                "tier": "Regional"
+            },
+            "name": "[variables('publicIPAddresses_name')]",
+            "apiVersion": "2018-08-01",
+            "location": "[resourcegroup().location]",
+            "tags": {
+                "Role-purpose": "Microsoft.Network/publicIPAddresses",
+                "environment": "[parameters('rgEnvironmentTag')]"
+            },
+            "scale": null,
+            "properties": {
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Dynamic",
+                "idleTimeoutInMinutes": 4,
+                "dnsSettings": {
+                    "domainNameLabel": "[variables('publicIPAddresses_name')]",
+                    "fqdn": "[concat(variables('publicIPAddresses_name'),'.',resourcegroup().location,'.cloudapp.azure.com')]"
+                },
+                "ipTags": []
+            },
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Network/applicationGateways",
+            "name": "[variables('wafname')]",
+            "apiVersion": "2018-08-01",
+            "location": "northeurope",
+            "tags": {
+                "Role-purpose": "Microsoft.Network/applicationGateways",
+                "environment": "[parameters('rgEnvironmentTag')]"
+            },
+            "scale": null,
+            "properties": {
+                "sku": {
+                    "name": "WAF_Medium",
+                    "tier": "WAF",
+                    "capacity": 2
+                },
+                "gatewayIPConfigurations": [
+                    {
+                        "name": "appGatewayIpConfig",
+                        "properties": {
+                            "subnet": {
+                                "id": "[parameters('subnetid')]"
+                            }
+                        },
+                        "type": "Microsoft.Network/applicationGateways/gatewayIPConfigurations"
+                    }
+                ],
+                "authenticationCertificates": [],
+                "frontendIPConfigurations": [
+                    {
+                        "name": "appGatewayFrontendIP",
+                        "type": "Microsoft.Network/applicationGateways/frontendIPConfigurations",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_name'))]"
+                            }
+                        }
+                    }
+                ],
+                "frontendPorts": [
+                    {
+                        "name": "appGatewayFrontendPort",
+                        "properties": {
+                            "port": 80
+                        },
+                        "type": "Microsoft.Network/applicationGateways/frontendPorts"
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "appGatewayBackendPool",
+                        "properties": {
+                            "backendAddresses": [
+                                {
+                                    "fqdn": "[parameters('fqdn')]"
+                                }
+                            ]
+                        },
+                        "type": "Microsoft.Network/applicationGateways/backendAddressPools"
+                    }
+                ],
+                "backendHttpSettingsCollection": [],
+                "httpListeners": [],
+                "urlPathMaps": [],
+                "requestRoutingRules": [],
+                "probes": [
+                    {
+                        "properties": {
+                            "protocol": "Http",
+                            "path": "/",
+                            "interval": 30,
+                            "timeout": 30,
+                            "unhealthyThreshold": 3,
+                            "pickHostNameFromBackendHttpSettings": true,
+                            "minServers": 0,
+                            "match": {
+                                "body": "",
+                                "statusCodes": [
+                                    "200-399"
+                                ]
+                            }
+                        },
+                        "type": "Microsoft.Network/applicationGateways/probes"
+                    }
+                ],
+                "redirectConfigurations": [],
+                "sslPolicy": {
+                    "policyType": "Custom",
+                    "minProtocolVersion": "TLSv1_2",
+                    "cipherSuites": [
+                        "TLS_RSA_WITH_AES_256_CBC_SHA256"
+                    ]
+                },
+                "webApplicationFirewallConfiguration": {
+                    "enabled": true,
+                    "firewallMode": "Prevention",
+                    "ruleSetType": "OWASP",
+                    "ruleSetVersion": "3.0",
+                    "disabledRuleGroups": [],
+                    "exclusions": [],
+                    "requestBodyCheck": false
+                },
+                "enableHttp2": false
+            },
+            "resources":[
+                {
+                    "type": "providers/diagnosticSettings",
+                    "name": "[concat('Microsoft.Insights/', 'WebApplicationFirewall')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Network/applicationGateways', variables('wafname'))]"
+                    ],
+                    "apiVersion": "2017-05-01-preview",
+                    "properties": {
+                        "name": "WebApplicationFirewall",
+                        "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storagelogstname'))]",
+                        "workspaceId": "[parameters('workspaceId')]",
+                        "logs": [
+                            {
+                                "category": "ApplicationGatewayAccessLog",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "days": 365,
+                                    "enabled": true
+                                }
+                            },
+                            {
+                                "category": "ApplicationGatewayPerformanceLog",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "days": 365,
+                                    "enabled": true
+                                }
+                            },
+                            {
+                                "category": "ApplicationGatewayFirewallLog",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "days": 365,
+                                    "enabled": true
+                                }
+                            }
+                        ],
+                        "metric": [
+                            {
+                                "category": "AllMetrics",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "enabled": true,
+                                    "days": 365
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddresses_name'))]"
+            ]
+        }
+    ],
+    "outputs": {}
+}

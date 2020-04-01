@@ -1,0 +1,113 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "enviromentPrefix":{
+      "type": "string"
+    },
+    "virtualNetworkAddressPrefix": {
+      "type": "string"
+    },
+    "subnet1AddressPrefix": {
+      "type": "string"
+    },
+    "networkSecurityGroupid1": {
+      "type": "string"
+    },
+    "routeTableid": {
+      "type": "string"
+    },
+    "rgEnvironmentTag": {
+      "type": "string"
+        }
+  },
+  "variables": {
+      "vnetname":"[concat(parameters('enviromentPrefix'),'netvnt01')]",
+      "subnet1name":"[concat(parameters('enviromentPrefix'),'netsbn01')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2018-08-01",
+      "name": "[variables('vnetname')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "Role-purpose": "Microsoft.Network/virtualNetworks",
+        "environment": "[parameters('rgEnvironmentTag')]"
+      },
+      "properties": {
+          "addressSpace": {
+              "addressPrefixes": [
+                "[parameters('virtualNetworkAddressPrefix')]"
+              ]
+          },
+          "subnets": [
+              {
+                  "name": "[variables('subnet1name')]",
+                  "properties": {
+                      "addressPrefix": "[parameters('subnet1AddressPrefix')]",
+                      "networkSecurityGroup": {
+                          "id": "[parameters('networkSecurityGroupid1')]"
+                      },
+                      "routeTable": {
+                          "id": "[parameters('routeTableid')]"
+                      },
+                      "serviceEndpoints": [],
+                      "delegations": []
+                  }
+              },
+              {
+                  "name": "[variables('subnet2name')]",
+                  "properties": {
+                      "addressPrefix": "[parameters('subnet2AddressPrefix')]",
+                      "networkSecurityGroup": {
+                          "id": "[parameters('networkSecurityGroupid2')]"
+                      },
+                      "routeTable": {
+                          "id": "[parameters('routeTableid')]"
+                      },
+                      "serviceEndpoints": [],
+                      "delegations": []
+                  }
+              },
+              {
+                "name": "[variables('subnet3name')]",
+                "properties": {
+                    "addressPrefix": "[parameters('subnet3AddressPrefix')]",
+                    "networkSecurityGroup": {
+                        "id": "[parameters('networkSecurityGroupid2')]"
+                    },
+                    "routeTable": {
+                        "id": "[parameters('routeTableid')]"
+                    },
+                    "serviceEndpoints": [],
+                    "delegations": []
+                }
+            }
+          ]
+        }
+      }
+    ],
+  "outputs": {
+    "vnetidout": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/virtualNetworks',concat(parameters('enviromentPrefix'),'netvnt01'))]"
+    },
+    "vnetnameout": {
+      "type": "string",
+      "value": "[concat(parameters('enviromentPrefix'),'netvnt01')]"
+    },
+    "subnet1idout": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnetname'),variables('subnet1name'))]"
+    },
+    "subnet2idout": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnetname'),variables('subnet2name'))]"
+    },
+    "subnet3idout": {
+        "type": "string",
+        "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnetname'),variables('subnet3name'))]"
+      }
+  }
+}

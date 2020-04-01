@@ -1,0 +1,104 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "enviromentPrefix": {
+      "type": "string"
+    },
+    "routes": {
+      "type": "array",
+      "defaultValue": [
+        {
+          "name": "APSAPR000F500P2S",
+          "addressPrefix": "10.44.6.0/23",
+          "nextHopIpAddress": "10.44.4.5"
+        },
+        {
+          "name": "APSAPR000F500S2S",
+          "addressPrefix": "10.44.8.0/23",
+          "nextHopIpAddress": "10.44.4.5"
+        },
+        {
+          "name": "UKSOPR000F500P2S",
+          "addressPrefix": "10.45.6.0/23",
+          "nextHopIpAddress": "10.45.4.5"
+        },
+        {
+          "name": "UKSOPR000F500S2S",
+          "addressPrefix": "10.45.8.0/23",
+          "nextHopIpAddress": "10.45.4.5"
+        },
+        {
+          "name": "USEUPR000F500P2S",
+          "addressPrefix": "10.48.6.0/23",
+          "nextHopIpAddress": "10.48.4.5"
+        },
+        {
+          "name": "USEUPR000F500S2S",
+          "addressPrefix": "10.48.8.0/23",
+          "nextHopIpAddress": "10.48.4.5"
+        }
+      ]
+    },
+    "ENGAGEMENT_ID":{
+        "type": "string"
+    },
+    "OWNER":{
+        "type": "string"
+    },
+    "CTP_SERVICE":{
+        "type": "string"
+    },
+    "ENVIRONMENT":{
+        "type": "string"
+    },
+    "DEPLOYMENT_ID":{
+        "type": "string"
+    },
+    "PRODUCT_APP":{
+        "type": "string"
+    }
+  },
+  "variables": {
+    "routeTableName":"[concat(parameters('enviromentPrefix'),'netrtb01')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/routeTables",
+      "name": "[variables('routeTableName')]",
+      "apiVersion": "2018-08-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "ENGAGEMENT_ID": "[parameters('ENGAGEMENT_ID')]",
+        "OWNER": "[parameters('OWNER')]",
+        "CTP_SERVICE": "[parameters('CTP_SERVICE')]",
+        "PRODUCT_APP": "[parameters('PRODUCT_APP')]",
+        "ENVIRONMENT": "[parameters('ENVIRONMENT')]",
+        "DEPLOYMENT_ID": "[parameters('DEPLOYMENT_ID')]",
+        "ROLE_PURPOSE": "Microsoft.Network/routeTables"
+      },
+      "scale": null,
+      "properties": {
+        "disableBgpRoutePropagation": true,
+        "copy": [{
+          "name": "routes",
+          "count": "[length(parameters('routes'))]",
+          "input": {
+            "name": "[parameters('routes')[copyIndex('routes')].name]",
+            "properties": {
+              "addressPrefix": "[parameters('routes')[copyIndex('routes')].addressPrefix]",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "[parameters('routes')[copyIndex('routes')].nextHopIpAddress]"
+            }
+          }
+        }]
+      }
+    }
+  ],
+  "outputs": {
+    "routetable":{
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
+    }
+  }
+}
