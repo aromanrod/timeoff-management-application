@@ -44,7 +44,7 @@
         },
         "storageAutoGrow": {
             "type": "string",
-            "defaultValue": "Disabled"
+            "defaultValue": "Enabled"
         },
         "infrastructureEncryption": {
             "type": "string",
