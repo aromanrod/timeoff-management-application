@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "loganalitycsname": {
+        "enviromentPrefix": {
             "type": "string"
         },
         "rgEnvironmentTag": {
@@ -14,11 +14,12 @@
     "resources": [
         {
             "type": "microsoft.operationalinsights/workspaces",
-            "name": "[parameters('loganalitycsname')]",
+            "name": "[concat(parameters('enviromentPrefix'),'logaworks')]",
             "apiVersion": "2015-11-01-preview",
             "location": "[resourceGroup().location]",
             "tags": {
-                "environment": "[parameters('rgEnvironmentTag')]"
+                "environment": "[parameters('rgEnvironmentTag')]",
+                "Role-purpose": "microsoft.operationalinsights/workspaces"
             },
             "scale": null,
             "properties": {
@@ -35,18 +36,18 @@
     "outputs": {
         "omsidref": {
             "type": "string",
-            "value": "[resourceId('microsoft.operationalinsights/workspaces', parameters('loganalitycsname'))]"
+            "value": "[resourceId('microsoft.operationalinsights/workspaces', concat(parameters('enviromentPrefix'),'logaworks'))]"
         },
         "omsname": {
             "type": "string",
-            "value": "[parameters('loganalitycsname')]"
+            "value": "[concat(parameters('enviromentPrefix'),'logaworks')]"
         },
         "workspaceCustomerId": {
-            "value": "[reference(resourceId('microsoft.operationalinsights/workspaces', parameters('loganalitycsname')), '2015-11-01-preview').customerId]",
+            "value": "[reference(resourceId('microsoft.operationalinsights/workspaces', concat(parameters('enviromentPrefix'),'logaworks')), '2015-11-01-preview').customerId]",
             "type": "string"
         },
         "workspacePrimarySharedKey": {
-            "value": "[listKeys(resourceId('microsoft.operationalinsights/workspaces', parameters('loganalitycsname')), '2015-11-01-preview').primarySharedKey]",
+            "value": "[listKeys(resourceId('microsoft.operationalinsights/workspaces', concat(parameters('enviromentPrefix'),'logaworks')), '2015-11-01-preview').primarySharedKey]",
             "type": "securestring"
         }
     }

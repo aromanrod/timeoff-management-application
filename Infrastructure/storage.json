@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "storageAccountName": {
+    "enviromentPrefix": {
       "type": "string"
     },
     "rgEnvironmentTag": {
@@ -10,10 +10,11 @@
     }
   },
   "variables": {
+    "storagename":"[concat(parameters('enviromentPrefix'),uniqueString(resourceGroup().id))]"
   },
   "resources": [
     {
-      "name": "[parameters('storageAccountName')]",
+      "name": "[variables('storagename')]",
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2019-04-01",
       "sku": {
@@ -25,7 +26,8 @@
         "supportsHttpsTrafficOnly": true
       },
       "tags": {
-        "environment": "[parameters('rgEnvironmentTag')]"
+        "environment": "[parameters('rgEnvironmentTag')]",
+        "Role-purpose": "Microsoft.Storage/storageAccounts"
       },
       "resources": [
       ]
@@ -34,19 +36,19 @@
   "outputs": {
     "storageAccountName": {
       "type": "string",
-      "value": "[parameters('storageAccountName')]"
+      "value": "[variables('storagename')]"
     },
     "storagekey": {
       "type": "string",
-      "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+      "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storagename')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
     },
     "storageAccountid": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Storage/storageAccounts',parameters('storageAccountName'))]"
+      "value": "[resourceId('Microsoft.Storage/storageAccounts',variables('storagename'))]"
     },
     "primaryendpoint": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))).primaryEndpoints.blob]"
+      "value": "[reference(resourceId('Microsoft.Storage/storageAccounts', variables('storagename'))).primaryEndpoints.blob]"
     }
   }
 }
