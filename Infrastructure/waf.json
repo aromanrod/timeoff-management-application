@@ -12,10 +12,10 @@
             "type": "string"
         },
         "workspaceId": {
-            "type": "string"
+            "type": "object"
         },
-        "storagelogstname": {
-            "type": "string"
+        "storageaccountname": {
+            "type": "object"
         },
         "rgEnvironmentTag": {
             "type": "string"
@@ -74,7 +74,7 @@
                         "name": "appGatewayIpConfig",
                         "properties": {
                             "subnet": {
-                                "id": "[parameters('subnetid')]"
+                                "id": "[parameters('subnetid').subnetid.value]"
                             }
                         },
                         "type": "Microsoft.Network/applicationGateways/gatewayIPConfigurations"
@@ -168,8 +168,8 @@
                     "apiVersion": "2017-05-01-preview",
                     "properties": {
                         "name": "WebApplicationFirewall",
-                        "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storagelogstname'))]",
-                        "workspaceId": "[parameters('workspaceId')]",
+                        "storageAccountId": "[parameters('storageaccountname').storageAccountid.value]",
+                        "workspaceId": "[parameters('workspaceId').omsidref.value]",
                         "logs": [
                             {
                                 "category": "ApplicationGatewayAccessLog",

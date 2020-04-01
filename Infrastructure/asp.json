@@ -2,18 +2,26 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "serverfarms_ASP_timeoffmanagementrgx_b12e_name": {
-            "defaultValue": "ASP-timeoffmanagementrgx-b12e",
+        "enviromentPrefix": {
             "type": "String"
+        },
+        "rgEnvironmentTag": {
+            "type": "string"
         }
     },
-    "variables": {},
+    "variables": {
+        "Aspname": "[concat(parameters('enviromentPrefix'),'serverfarm')]"
+    },
     "resources": [
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2018-02-01",
-            "name": "[parameters('serverfarms_ASP_timeoffmanagementrgx_b12e_name')]",
-            "location": "Central US",
+            "name": "[variables('Aspname')]",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "environment": "[parameters('rgEnvironmentTag')]",
+                "Role-purpose": "Microsoft.Web/serverfarms"
+            },
             "sku": {
                 "name": "B1",
                 "tier": "Basic",
@@ -26,7 +34,6 @@
                 "perSiteScaling": false,
                 "maximumElasticWorkerCount": 1,
                 "isSpot": false,
-                "freeOfferExpirationTime": "2020-04-30T23:36:21.16",
                 "reserved": true,
                 "isXenon": false,
                 "hyperV": false,
@@ -34,5 +41,11 @@
                 "targetWorkerSizeId": 0
             }
         }
-    ]
+    ],
+    "outputs": {
+        "serverfarmid": {
+            "type": "string",
+            "value":  "[resourceId('Microsoft.Web/serverfarms',variables('Aspname'))]"
+        }
+    }
 }

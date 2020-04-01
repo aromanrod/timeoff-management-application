@@ -10,11 +10,12 @@
         }
     },
     "variables": {
+        "workspacename":"[concat(parameters('enviromentPrefix'),'logawspace')]"
     },
     "resources": [
         {
             "type": "microsoft.operationalinsights/workspaces",
-            "name": "[concat(parameters('enviromentPrefix'),'logaworks')]",
+            "name": "[variables('workspacename')]",
             "apiVersion": "2015-11-01-preview",
             "location": "[resourceGroup().location]",
             "tags": {
@@ -36,18 +37,18 @@
     "outputs": {
         "omsidref": {
             "type": "string",
-            "value": "[resourceId('microsoft.operationalinsights/workspaces', concat(parameters('enviromentPrefix'),'logaworks'))]"
+            "value": "[resourceId('microsoft.operationalinsights/workspaces', variables('workspacename'))]"
         },
         "omsname": {
             "type": "string",
-            "value": "[concat(parameters('enviromentPrefix'),'logaworks')]"
+            "value": "[variables('workspacename')]"
         },
         "workspaceCustomerId": {
-            "value": "[reference(resourceId('microsoft.operationalinsights/workspaces', concat(parameters('enviromentPrefix'),'logaworks')), '2015-11-01-preview').customerId]",
+            "value": "[reference(resourceId('microsoft.operationalinsights/workspaces', variables('workspacename')), '2015-11-01-preview').customerId]",
             "type": "string"
         },
         "workspacePrimarySharedKey": {
-            "value": "[listKeys(resourceId('microsoft.operationalinsights/workspaces', concat(parameters('enviromentPrefix'),'logaworks')), '2015-11-01-preview').primarySharedKey]",
+            "value": "[listKeys(resourceId('microsoft.operationalinsights/workspaces', variables('workspacename')), '2015-11-01-preview').primarySharedKey]",
             "type": "securestring"
         }
     }

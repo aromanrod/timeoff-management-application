@@ -8,14 +8,11 @@
     "virtualNetworkAddressPrefix": {
       "type": "string"
     },
-    "subnet1AddressPrefix": {
+    "subnetAddressPrefix": {
       "type": "string"
     },
     "networkSecurityGroupid": {
       "type": "object"
-    },
-    "routeTableid": {
-      "type": "string"
     },
     "rgEnvironmentTag": {
       "type": "string"
@@ -45,12 +42,9 @@
           {
             "name": "[variables('subnet1name')]",
             "properties": {
-              "addressPrefix": "[parameters('subnet1AddressPrefix')]",
+              "addressPrefix": "[parameters('subnetAddressPrefix')]",
               "networkSecurityGroup": {
                 "id": "[parameters('networkSecurityGroupid').networkSecurityGroupid.value]"
-              },
-              "routeTable": {
-                "id": "[parameters('routeTableid')]"
               },
               "serviceEndpoints": [
               ],
@@ -71,7 +65,7 @@
       "type": "string",
       "value": "[concat(parameters('enviromentPrefix'),'netvnt01')]"
     },
-    "subnet1idout": {
+    "subnetid": {
       "type": "string",
       "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('vnetname'),variables('subnet1name'))]"
     }

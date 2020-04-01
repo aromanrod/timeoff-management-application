@@ -3,11 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "Appservicename": {
-            "defaultValue": "timeoffwebappx",
             "type": "String"
         },
         "serverfarmsid": {
-            "type": "String"
+            "type": "object"
         },
         "rgEnvironmentTag": {
             "type": "string"
@@ -39,7 +38,7 @@
                         "hostType": "Repository"
                     }
                 ],
-                "serverFarmId": "[parameters('serverfarmsid')]",
+                "serverFarmId": "[parameters('serverfarmsid').serverfarmid.value]",
                 "reserved": true,
                 "isXenon": false,
                 "hyperV": false,

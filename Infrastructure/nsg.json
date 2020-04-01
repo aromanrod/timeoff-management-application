@@ -8,8 +8,8 @@
         "workspaceId":{
             "type": "object"
         },
-        "storagelogstname":{
-            "type": "string"
+        "storagelogsname":{
+            "type": "object"
         },
         "rgEnvironmentTag": {
            "type": "string"
@@ -171,7 +171,7 @@
                   "apiVersion": "2017-05-01-preview",
                   "properties": {
                     "name": "DiagnosticsNetworkSecurityGroup",
-                    "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storagelogstname'))]",
+                    "storageAccountId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storagelogsname').storageAccountName.value)]",
                     "workspaceId": "[parameters('workspaceId').omsidref.value]",
                     "logs": [
                         {
