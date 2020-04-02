@@ -27,7 +27,6 @@
             "type": "Microsoft.Network/applicationGateways",
             "apiVersion": "2019-09-01",
             "location": "[resourceGroup().location]",
-            "zones": [],
             "dependsOn": [
                 "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIpName'))]"
             ],
@@ -136,11 +135,10 @@
             "apiVersion": "2019-02-01",
             "type": "Microsoft.Network/publicIPAddresses",
             "name": "[variables('publicipname')]",
-            "location": "[resourceGroup().locations]",
+            "location": "[resourceGroup().location]",
             "sku": {
                 "name": "Standard"
             },
-            "zones": [],
             "properties": {
                 "publicIPAllocationMethod": "Static"
             }
