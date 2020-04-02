@@ -10,6 +10,9 @@
         },
         "appservicename":{
             "type":"string"
+        },
+        "appservicename2":{
+            "type":"string"
         }
     },
     "variables": {
@@ -69,6 +72,9 @@
                             "backendAddresses": [
                                 {
                                     "fqdn": "[concat(parameters('appservicename'),'.azurewebsites.net')]"
+                                },
+                                {
+                                    "fqdn": "[concat(parameters('appservicename2'),'.azurewebsites.net')]"
                                 }
                             ]
                         }
