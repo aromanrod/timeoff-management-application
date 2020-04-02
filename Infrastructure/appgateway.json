@@ -5,8 +5,8 @@
         "enviromentPrefix": {
             "type": "string"
         },
-        "vnetname": {
-            "type": "object"
+        "subnetid": {
+            "type": "string"
         },
         "appservicename":{
             "type":"string"
@@ -41,7 +41,7 @@
                         "name": "appGatewayIpConfig",
                         "properties": {
                             "subnet": {
-                                "id": "[parameters('vnetname').subnetid.value]"
+                                "id": "[parameters('subnetid')]"
                             }
                         }
                     }
