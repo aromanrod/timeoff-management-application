@@ -34,7 +34,6 @@
                     {
                         "name": "Port_443",
                         "properties": {
-                            "provisioningState": "Succeeded",
                             "protocol": "*",
                             "sourcePortRange": "*",
                             "destinationPortRange": "443",
@@ -52,7 +51,6 @@
                     {
                         "name": "AppGateway",
                         "properties": {
-                            "provisioningState": "Succeeded",
                             "protocol": "*",
                             "sourcePortRange": "*",
                             "destinationPortRange": "65200-65535",
