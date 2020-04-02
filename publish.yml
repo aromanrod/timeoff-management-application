@@ -1,0 +1,27 @@
+steps:   
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet publish'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      command: publish
+      arguments: '-c $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/Website'
+      projects: 'web/web.csproj'    
+
+  # Copies the Identity scripts to the a staging directory.
+  - bash: cp -r web/db-scripts "$(build.artifactstagingdirectory)/SqlScripts"
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    displayName: copy db-scripts
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Website'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)/Website'
+      ArtifactName: Website
+      
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish SQL scripts'
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)/SqlScripts'
+      ArtifactName: SqlScripts

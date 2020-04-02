@@ -10,7 +10,7 @@
         }
     },
     "variables": {
-        "workspacename":"[concat(parameters('enviromentPrefix'),'logawspace')]"
+        "workspacename":"[concat(parameters('enviromentPrefix'),'loawspace')]"
     },
     "resources": [
         {
