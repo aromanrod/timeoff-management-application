@@ -30,5 +30,27 @@ steps:
     
   displayName: 'npm build'
 
-  
+- task: Npm@1
+  displayName: 'npm custom'
+  inputs:
+    command: custom
+    workingDir: web/package.json
+    verbose: false
+    customCommand: test
+    customEndpoint: NPM
+
+- task: ArchiveFiles@1
+  displayName: 'Archive files '
+  inputs:
+    rootFolder: web
+    includeRootFolder: false
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)/infrastructure'
+  inputs:
+    SourceFolder: Infrastructure
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/infrastructure'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
  
